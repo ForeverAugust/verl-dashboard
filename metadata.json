@@ -1,0 +1,6 @@
+{
+  "name": "VERL RL Dashboard",
+  "description": "A real-time Reinforcement Learning training dashboard for the verl framework, visualizing policy action distributions, reasoning paths, rewards, and environment state evolution.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
