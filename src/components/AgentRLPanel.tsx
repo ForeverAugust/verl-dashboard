@@ -35,6 +35,7 @@ export default function AgentRLPanel({ records }: AgentRLPanelProps) {
   const [selectedDataIndex, setSelectedDataIndex] = useState<string | number | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleCopy = (text: string, copyKey: string) => {
     navigator.clipboard.writeText(text);
@@ -102,8 +103,14 @@ export default function AgentRLPanel({ records }: AgentRLPanelProps) {
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-2xl flex flex-col gap-5" id="agent-rl-panel">
-      {/* Panel Header & Micro Stats */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      {/* Panel Header & Micro Stats (click to collapse / expand) */}
+      <div
+        onClick={() => setIsCollapsed(prev => !prev)}
+        className={`flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer select-none group ${
+          isCollapsed ? '' : 'border-b border-slate-800 pb-4'
+        }`}
+        title={isCollapsed ? '展开结果详情' : '收起结果详情'}
+      >
         <div>
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
@@ -139,8 +146,14 @@ export default function AgentRLPanel({ records }: AgentRLPanelProps) {
             <span className="text-[10px] text-slate-500 uppercase">平均 Reward</span>
             <span className="text-indigo-400 font-bold text-sm">{avgReward.toFixed(3)}</span>
           </div>
+          <span className="text-slate-400 group-hover:text-slate-200 p-1 flex items-center transition-colors">
+            {isCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+          </span>
         </div>
       </div>
+
+      {!isCollapsed && (
+        <>
 
       {/* Train Data Index Selection Bar (列表展示 train_data_index) */}
       <div className="bg-slate-950/80 border border-slate-800 rounded-lg p-3 flex flex-col gap-2.5">
@@ -499,6 +512,8 @@ export default function AgentRLPanel({ records }: AgentRLPanelProps) {
           })
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }

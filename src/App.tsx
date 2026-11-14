@@ -12,7 +12,8 @@ import ActionDistributionPanel from './components/ActionDistributionPanel';
 import PythonCodeSnippet from './components/PythonCodeSnippet';
 import ToolCallPanel from './components/ToolCallPanel';
 import AgentRLPanel from './components/AgentRLPanel';
-import { Activity, Terminal, Layers, RefreshCcw, Wifi } from 'lucide-react';
+import TrajectoryPanel from './components/TrajectoryPanel';
+import { Activity, Terminal, Route, RefreshCcw, Wifi } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -42,7 +43,7 @@ export default function App() {
   });
 
   const [wsConnected, setWsConnected] = useState(false);
-  const [activeTab, setActiveTab] = useState<'sandbox' | 'sdk'>('sandbox');
+  const [activeTab, setActiveTab] = useState<'sandbox' | 'trajectory' | 'sdk'>('sandbox');
   const [selectedToken, setSelectedToken] = useState<GenerationStep | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
@@ -235,6 +236,12 @@ export default function App() {
             <Activity size={13} /> Interactive Sandbox
           </button>
           <button
+            onClick={() => setActiveTab('trajectory')}
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all flex items-center gap-1.5 ${activeTab === 'trajectory' ? 'bg-slate-900 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}
+          >
+            <Route size={13} /> 轨迹数据 Trajectory
+          </button>
+          <button
             onClick={() => setActiveTab('sdk')}
             className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all flex items-center gap-1.5 ${activeTab === 'sdk' ? 'bg-slate-900 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}
           >
@@ -318,6 +325,19 @@ export default function App() {
                   <h2 className="font-sans font-bold text-slate-200 text-sm tracking-tight">Dynamic Tool Invocations & Usage Trends</h2>
                 </div>
                 <ToolCallPanel metricsHistory={state.metricsHistory} recentToolCalls={state.recentToolCalls || []} />
+              </section>
+            </div>
+          )}
+
+          {activeTab === 'trajectory' && (
+            <div className="flex flex-col gap-5">
+              {/* Standalone Trajectory Explorer */}
+              <section id="trajectory-section">
+                <div className="flex items-center gap-1.5 mb-4">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                  <h2 className="font-sans font-bold text-slate-200 text-sm tracking-tight">轨迹数据浏览 (Step-by-Step Trajectory Explorer)</h2>
+                </div>
+                <TrajectoryPanel sample={state.activeLLMSamples[0] || null} />
               </section>
 
               {/* Multi-Turn Agent RL Results Panel */}
